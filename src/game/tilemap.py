@@ -44,5 +44,6 @@ class TileMap:
             colonne, ligne = tile_num%columns, tile_num//columns
             x, y = colonne*(self.tile_width+spacing), ligne*(self.tile_height+spacing) #calcule la position de la tuile
             rect = pygame.Rect(x, y, self.tile_width, self.tile_height)
-            self.tiles[tile_num+1] = image.subsurface(rect)
+            tile_surface = image.subsurface(rect).copy()
+            self.tiles[tile_num+1] = pygame.transform.scale(tile_surface, (self.tile_width*utils.ZOOM, self.tile_height*utils.ZOOM))
 
