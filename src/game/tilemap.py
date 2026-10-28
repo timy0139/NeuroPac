@@ -18,3 +18,10 @@ class TileMap:
 
         utils.setMapWidth(self.width)
         utils.setMapHeight(self.height)
+
+        #récupération du CSV et création de la matrice 2D
+        data_text = self.root.find(".//data").text.strip()
+        flat_list = [int(v) for v in data_text.split(",") if v.strip()]
+
+        self.matrix = [flat_list[y*self.width : (y+1)*self.width]for y in range(self.height)]
+        self.tiles = {}
