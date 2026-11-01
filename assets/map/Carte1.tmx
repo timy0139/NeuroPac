@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="28" height="31" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="28" height="31" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="6">
  <tileset firstgid="1" source="Tileset_Maze_Pacman.tsx"/>
+ <tileset firstgid="145" source="General_Sprites.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="28" height="31">
   <data encoding="csv">
 50,59,59,59,59,59,59,59,59,59,59,59,59,92,91,59,59,59,59,59,59,59,59,59,59,59,59,49,
@@ -36,4 +37,11 @@
 54,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,61,53
 </data>
  </layer>
+ <objectgroup id="2" name="Entities">
+  <object id="1" name="pacman" gid="145" x="104" y="196" width="16" height="16"/>
+  <object id="2" name="blinky" gid="201" x="104" y="100" width="16" height="16"/>
+  <object id="3" name="pinky" gid="215" x="104" y="124" width="16" height="16"/>
+  <object id="4" name="inky" gid="229" x="88" y="124" width="16" height="16"/>
+  <object id="5" name="clyde" gid="243" x="120" y="124" width="16" height="16"/>
+ </objectgroup>
 </map>

@@ -18,7 +18,7 @@ class Screen:
     #rafraichit la fenêtre
     def update(self):
         pygame.display.update()
-        self.deltatime = self.clock.tick(utils.FPS)
+        self.deltatime = self.clock.tick(self.framerate)
 
     def get_deltatime(self):
         return self.deltatime
