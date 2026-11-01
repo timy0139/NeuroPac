@@ -27,3 +27,5 @@ def setMapHeight(height):
 def setTileSize(size):
     global TILE_SIZE
     TILE_SIZE = size
+
+WALKABLE_TILES = {93, 94, 96}

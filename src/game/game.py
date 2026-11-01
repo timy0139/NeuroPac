@@ -1,4 +1,5 @@
 import pygame
+import debug
 import utils
 import sprites
 from entities import Entities
@@ -11,6 +12,7 @@ class Game:
         pygame.init()
         self.screen = Screen()
         self.running = False
+        self.debug = False
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
 
@@ -31,7 +33,9 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running=False
-
+                # activer/désactiver le mode debug
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                self.debug = not self.debug
 
     def update(self, dt):
         for entity in self.entities:
@@ -51,7 +55,8 @@ class Game:
                         self.screen.get_display().blit(tile_image,(pos_x, pos_y))
         for entity in self.entities:
             entity.draw(self.screen.get_display())
-
+        if self.debug:
+            debug.draw_walkable(self.screen.get_display(), self.tilemap)
 
     def quit(self):
         pygame.quit()
