@@ -3,6 +3,7 @@ import debug
 import utils
 import sprites
 from entities import Entities
+from pacman import Pacman
 from screen import Screen
 from tilemap import TileMap
 
@@ -13,6 +14,7 @@ class Game:
         self.screen = Screen()
         self.running = False
         self.debug = False
+        self.pacman = None
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
 
@@ -21,7 +23,9 @@ class Game:
         for obj in self.tilemap.entities:
             name = obj["name"]
             if name == "pacman":
-                frames = sprites.PACMAN_FRAMES
+                self.pacman = Pacman(obj["x"], obj["y"], self.tilemap)
+                entities.append(self.pacman)
+                continue
             elif name in sprites.GHOST_ROWS:
                 frames = sprites.ghost_frames(name)
             else:
@@ -38,6 +42,8 @@ class Game:
                 self.debug = not self.debug
 
     def update(self, dt):
+        if self.pacman is not None:
+            self.pacman.handle_input(pygame.key.get_pressed())
         for entity in self.entities:
             entity.update(dt) 
 

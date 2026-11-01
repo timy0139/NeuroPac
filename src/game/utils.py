@@ -29,3 +29,4 @@ def setTileSize(size):
     TILE_SIZE = size
 
 WALKABLE_TILES = {93, 94, 96}
+PACMAN_SPEED = 75
