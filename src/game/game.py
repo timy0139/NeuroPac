@@ -1,5 +1,7 @@
 import pygame
 import utils
+import sprites
+from entities import Entities
 from screen import Screen
 from tilemap import TileMap
 
@@ -10,6 +12,20 @@ class Game:
         self.screen = Screen()
         self.running = False
         self.tilemap = TileMap(utils.MAP_FILE)
+        self.entities = self.create_entities()   
+
+    def create_entities(self):
+        entities = []
+        for obj in self.tilemap.entities:
+            name = obj["name"]
+            if name == "pacman":
+                frames = sprites.PACMAN_FRAMES
+            elif name in sprites.GHOST_ROWS:
+                frames = sprites.ghost_frames(name)
+            else:
+                continue                      
+            entities.append(Entities(name, obj["x"], obj["y"], frames, self.tilemap))
+        return entities
 
     def hundle_events(self):
         for event in pygame.event.get():
