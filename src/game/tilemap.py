@@ -48,13 +48,12 @@ class TileMap:
         # Taille de tuile DU TILESET (8 pour le labyrinthe, 16 pour les sprites)
         tilewidth = int(tsx_root.get("tilewidth"))
         tileheight = int(tsx_root.get("tileheight"))
-        # Tiled omet ces attributs quand ils valent 0 -> défaut 0 (et non plus 1)
         spacing = int(tsx_root.get("spacing", 0))
         margin = int(tsx_root.get("margin", 0))
         columns = int(tsx_root.get("columns"))
         tilecount = int(tsx_root.get("tilecount"))
 
-        # L'image est relative au .tsx (et plus au .tmx) : indispensable pour ../graphics/
+      
         image_path = (tsx_path.parent / tsx_root.find("image").get("source")).resolve()
         image = pygame.image.load(image_path).convert_alpha()
 
@@ -63,27 +62,27 @@ class TileMap:
             x = margin + col * (tilewidth + spacing)   # position de la tuile dans l'image
             y = margin + row * (tileheight + spacing)
             surf = image.subsurface(pygame.Rect(x, y, tilewidth, tileheight)).copy()
-            # Clé = gid global = firstgid + numéro local (évite les collisions)
+            
             self.tiles[firstgid + n] = pygame.transform.scale(surf, (tilewidth * utils.ZOOM, tileheight * utils.ZOOM))
 
     def load_objects(self):
         entities = []
-        # Cherche <objectgroup name="Entities"> ; None si le calque n'existe pas
+        # Cherche objectgroup name="Entities" ; None si le calque n'existe pas
         group = self.root.find("objectgroup[@name='Entities']")
         if group is None:
             return entities
 
         for obj in group.findall("object"):
-            # Les bits de poids fort du gid codent les flips Tiled : on les masque
+            
             gid = int(obj.get("gid")) & 0x0FFFFFFF
             w = float(obj.get("width"))
             h = float(obj.get("height"))
             x = float(obj.get("x"))
-            y = float(obj.get("y")) - h      # Tiled donne le BAS du sprite -> on remonte
+            y = float(obj.get("y")) - h      
             entities.append({
-                "name": obj.get("name"),     # "pacman", "blinky", ...
+                "name": obj.get("name"),     
                 "gid": gid,
-                "x": x + w / 2,              # CENTRE du sprite, en pixels non zoomés
+                "x": x + w / 2,              
                 "y": y + h / 2,
             })
         return entities
