@@ -40,7 +40,7 @@ class TileMap:
             tsx_path = (base_directory / tileset.get("source")).resolve()
             self.load_one_tileset(tsx_path, firstgid)
             # permet de retrouver les sprites en les marquant
-            if tsx_path.stem == "General_sprites":
+            if tsx_path.stem == "General_Sprites":
                 self.sprite_firstgid = firstgid
 
     def load_one_tileset(self, tsx_path, firstgid):
