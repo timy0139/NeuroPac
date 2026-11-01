@@ -34,7 +34,8 @@ class Game:
 
 
     def update(self, dt):
-        pass
+        for entity in self.entities:
+            entity.update(dt) 
 
     def draw(self):
         self.screen.clear()
@@ -48,6 +49,8 @@ class Game:
                         pos_x = x* self.tilemap.tile_width*utils.ZOOM
                         pos_y = y*self.tilemap.tile_height*utils.ZOOM
                         self.screen.get_display().blit(tile_image,(pos_x, pos_y))
+        for entity in self.entities:
+            entity.draw(self.screen.get_display())
 
 
     def quit(self):
