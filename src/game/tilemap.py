@@ -24,26 +24,66 @@ class TileMap:
         flat_list = [int(v) for v in data_text.split(",") if v.strip()]
 
         self.matrix = [flat_list[y*self.width : (y+1)*self.width]for y in range(self.height)]
+                
         self.tiles = {}
-        self.load_tileset(tmx_path.parent)
+        self.sprite_firstgid = None
+        # Charge chaque tileset déclaré dans le .tmx
+        self.load_tilesets(tmx_path.parent)
+        self.entities = self.load_objects()
 
 
     #permet de découper l'affichage en fonction du nombre de tuile
-    def load_tileset(self, base_directory):
-        tsx_source = self.root.find("tileset").get("source")
-        tsx_root = ElementTree.parse(base_directory/tsx_source).getroot() #combine les 2 chemins
-        spacing = int(tsx_root.get("spacing", 1))
+    def load_tilesets(self, base_directory):
+        # findall car 2 tilesets dans la carte
+        for tileset in self.root.findall("tileset"):
+            firstgid = int(tileset.get("firstgid"))   # 1 pour le labyrinthe, 145 pour les sprites
+            tsx_path = (base_directory / tileset.get("source")).resolve()
+            self.load_one_tileset(tsx_path, firstgid)
+            # permet de retrouver les sprites en les marquant
+            if tsx_path.stem == "General_sprites":
+                self.sprite_firstgid = firstgid
+
+    def load_one_tileset(self, tsx_path, firstgid):
+        tsx_root = ElementTree.parse(tsx_path).getroot()
+        # Taille de tuile DU TILESET (8 pour le labyrinthe, 16 pour les sprites)
+        tilewidth = int(tsx_root.get("tilewidth"))
+        tileheight = int(tsx_root.get("tileheight"))
+        # Tiled omet ces attributs quand ils valent 0 -> défaut 0 (et non plus 1)
+        spacing = int(tsx_root.get("spacing", 0))
+        margin = int(tsx_root.get("margin", 0))
         columns = int(tsx_root.get("columns"))
         tilecount = int(tsx_root.get("tilecount"))
 
-        image_path = base_directory/tsx_root.find("image").get("source")
+        # L'image est relative au .tsx (et plus au .tmx) : indispensable pour ../graphics/
+        image_path = (tsx_path.parent / tsx_root.find("image").get("source")).resolve()
         image = pygame.image.load(image_path).convert_alpha()
 
-        #découpage et calcule de la position des tuiles
-        for tile_num in range(tilecount):
-            colonne, ligne = tile_num%columns, tile_num//columns
-            x, y = colonne*(self.tile_width+spacing), ligne*(self.tile_height+spacing) #calcule la position de la tuile
-            rect = pygame.Rect(x, y, self.tile_width, self.tile_height)
-            tile_surface = image.subsurface(rect).copy()
-            self.tiles[tile_num+1] = pygame.transform.scale(tile_surface, (self.tile_width*utils.ZOOM, self.tile_height*utils.ZOOM))
+        for n in range(tilecount):
+            col, row = n % columns, n // columns
+            x = margin + col * (tilewidth + spacing)   # position de la tuile dans l'image
+            y = margin + row * (tileheight + spacing)
+            surf = image.subsurface(pygame.Rect(x, y, tilewidth, tileheight)).copy()
+            # Clé = gid global = firstgid + numéro local (évite les collisions)
+            self.tiles[firstgid + n] = pygame.transform.scale(surf, (tilewidth * utils.ZOOM, tileheight * utils.ZOOM))
 
+    def load_objects(self):
+        entities = []
+        # Cherche <objectgroup name="Entities"> ; None si le calque n'existe pas
+        group = self.root.find("objectgroup[@name='Entities']")
+        if group is None:
+            return entities
+
+        for obj in group.findall("object"):
+            # Les bits de poids fort du gid codent les flips Tiled : on les masque
+            gid = int(obj.get("gid")) & 0x0FFFFFFF
+            w = float(obj.get("width"))
+            h = float(obj.get("height"))
+            x = float(obj.get("x"))
+            y = float(obj.get("y")) - h      # Tiled donne le BAS du sprite -> on remonte
+            entities.append({
+                "name": obj.get("name"),     # "pacman", "blinky", ...
+                "gid": gid,
+                "x": x + w / 2,              # CENTRE du sprite, en pixels non zoomés
+                "y": y + h / 2,
+            })
+        return entities
