@@ -4,7 +4,7 @@ from entities import Entities
 
 
 DIRECTIONS = {"left": (-1, 0), "right": (1, 0), "up": (0, -1), "down": (0, 1)}
-
+OPPOSITE = {"left": "right", "right": "left", "up": "down", "down": "up"}
 
 class Movable(Entities):
     def __init__(self, name, x, y, frames, tilemap, direction="left", speed=utils.PACMAN_SPEED):
@@ -21,13 +21,21 @@ class Movable(Entities):
 
 
     def can_go(self, direction):
-        dx, dy = DIRECTIONS[self.direction]
+        dx, dy = DIRECTIONS[direction]
         return self.tilemap.is_walkable(self.col + dx, self.row + dy)
-    
+
+    def reverse(self):
+        origin = (self.col, self.row)
+        self.col, self.row = self.target
+        self.target = origin
+        self.progression = self.tile - self.progress
+        self.direction = self.next_direction
+
     #Lorsqu'au centre d'une case prend la direction demandée
     def start_move(self):
-        self.direction = self.next_direction
-        if not self.can_go(self.direction):
+        if self.can_go(self.next_direction):
+            self.direction = self.next_direction
+        elif not self.can_go(self.direction):
             return False
         dx, dy = DIRECTIONS[self.direction]
         self.target = (self.col + dx, self.row + dy)  
@@ -50,6 +58,8 @@ class Movable(Entities):
     def update(self, dt):
         distance = self.speed * dt / 1000
         self.moving = True
+        if self.target is not None and self.next_direction == OPPOSITE[self.direction]:
+            self.reverse()
         while distance > 0:
             if self.target is None and not self.start_move():
                 self.moving = False
