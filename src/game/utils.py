@@ -30,3 +30,7 @@ def setTileSize(size):
 
 WALKABLE_TILES = {93, 94, 96}
 PACMAN_SPEED = 75
+
+EMPTY_TILE = 93     # case vide
+GOMME_TILE = 94    # gomme
+SPECIAL_TILE = 96     # gomme spéciale

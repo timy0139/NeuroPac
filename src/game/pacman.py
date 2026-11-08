@@ -17,3 +17,7 @@ class Pacman(Movable):
             self.next_direction = "up"
         elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.next_direction = "down"
+
+    def arrive(self):
+        super().arrive()
+        self.tilemap.eat_gomme(self.col, self.row) 

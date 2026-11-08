@@ -91,3 +91,12 @@ class TileMap:
         if col < 0 or col >= self.width or row < 0 or row >= self.height:
             return False
         return self.matrix[row][col] in utils.WALKABLE_TILES
+
+    def eat_gomme(self, col, row):
+        if col < 0 or col >= self.width or row < 0 or row >= self.height:
+            return 0
+        tile = self.matrix[row][col]
+        if tile == utils.GOMME_TILE or tile == utils.SPECIAL_TILE:
+            self.matrix[row][col] = utils.EMPTY_TILE
+            return tile          
+        return 0                 
