@@ -16,7 +16,8 @@ class Movable(Entities):
         self.next_direction = direction    
         self.target = None                 
         self.progress = 0.0                 
-        self.moving = True                       
+        self.moving = True 
+        self.update_position()                      
 
     #Lorsqu'au centre d'une case prend la direction demandée
     def start_move(self):
