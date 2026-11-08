@@ -16,12 +16,19 @@ class Movable(Entities):
         self.next_direction = direction    
         self.target = None                 
         self.progress = 0.0                 
-        self.moving = True 
+        self.moving = False
         self.update_position()                      
 
+
+    def can_go(self, direction):
+        dx, dy = DIRECTIONS[self.direction]
+        return self.tilemap.is_walkable(self.col + dx, self.row + dy)
+    
     #Lorsqu'au centre d'une case prend la direction demandée
     def start_move(self):
         self.direction = self.next_direction
+        if not self.can_go(self.direction):
+            return False
         dx, dy = DIRECTIONS[self.direction]
         self.target = (self.col + dx, self.row + dy)  
         self.progress = 0.0
@@ -42,14 +49,17 @@ class Movable(Entities):
 
     def update(self, dt):
         distance = self.speed * dt / 1000
+        self.moving = True
         while distance > 0:
-            if self.target is None:
-                self.start_move()           
+            if self.target is None and not self.start_move():
+                self.moving = False
+                break       
             step = min(distance, self.tile - self.progress)
             self.progress += step
             distance -= step
             if self.progress >= self.tile:
                 self.arrive()              
         self.update_position()
-        super().update(dt)                  
+        if self.moving:
+            super().update(dt)                  
       
