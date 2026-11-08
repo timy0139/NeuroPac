@@ -86,3 +86,8 @@ class TileMap:
                 "y": y + h / 2,
             })
         return entities
+
+    def is_walkable(self, col, row):
+        if col < 0 or col >= self.width or row < 0 or row >= self.height:
+            return False
+        return self.matrix[row][col] in utils.WALKABLE_TILES
