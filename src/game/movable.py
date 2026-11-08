@@ -29,3 +29,26 @@ class Movable(Entities):
         self.col, self.row = self.target
         self.target = None
         self.progress = 0.0
+
+    def update_position(self):
+        centrex = self.col * self.tile + self.tile / 2
+        centrey = self.row * self.tile + self.tile / 2
+        if self.target is not None:
+            dx, dy = DIRECTIONS[self.direction]
+            centrex += dx * self.progress
+            centrey += dy * self.progress
+        self.x, self.y = centrex, centrey
+
+    def update(self, dt):
+        distance = self.speed * dt / 1000
+        while distance > 0:
+            if self.target is None:
+                self.start_move()           
+            step = min(distance, self.tile - self.progress)
+            self.progress += step
+            distance -= step
+            if self.progress >= self.tile:
+                self.arrive()              
+        self.update_position()
+        super().update(dt)                  
+      
