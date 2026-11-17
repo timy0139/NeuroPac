@@ -20,4 +20,10 @@ class Pacman(Movable):
 
     def arrive(self):
         super().arrive()
-        self.tilemap.eat_gomme(self.col, self.row) 
+        tile = self.tilemap.eat_gomme(self.col, self.row) #change tile en tile vide si gomme
+        #update score
+        if(tile != 0):
+            if tile == utils.GOMME_TILE:
+                utils.SCORE += 10
+            if tile == utils.SPECIAL_TILE:
+                utils.SCORE += 50

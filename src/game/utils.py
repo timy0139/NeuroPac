@@ -15,6 +15,7 @@ BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60                    
 MAP_WIDTH = 0
 MAP_HEIGHT = 0
+SCORE = 0
 
 def setMapWidth(width):
     global MAP_WIDTH

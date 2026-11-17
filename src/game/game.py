@@ -15,6 +15,7 @@ class Game:
         self.running = False
         self.debug = False
         self.pacman = None
+        self.font = pygame.font.Font(None, 24)
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
 
@@ -63,6 +64,7 @@ class Game:
             entity.draw(self.screen.get_display())
         if self.debug:
             debug.draw_walkable(self.screen.get_display(), self.tilemap)
+            debug.draw_score(self.screen.get_display(), self.font)
 
     def quit(self):
         pygame.quit()
