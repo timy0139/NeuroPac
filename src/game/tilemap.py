@@ -6,7 +6,7 @@ import utils
 
 
 class TileMap:
-    def __init__(self, tmx_path):
+    def __init__(self, tmx_path, render=True):
         tmx_path = Path(tmx_path)
         tree = ElementTree.parse(tmx_path)
         self.root = tree.getroot() #racine de mon arbre (map pour carte1)
@@ -27,6 +27,10 @@ class TileMap:
         self.initial_matrix = [row[:] for row in self.matrix]        
         self.tiles = {}
         self.sprite_firstgid = None
+        self.render = render
+        if self.render:
+            self.load_tilesets(tmx_path.parent)
+        self.entities = self.load_objects()
         # Charge chaque tileset déclaré dans le .tmx
         self.load_tilesets(tmx_path.parent)
         self.entities = self.load_objects()

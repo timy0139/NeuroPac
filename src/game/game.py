@@ -10,14 +10,22 @@ from hud import Hud
 
 
 class Game:
-    def __init__(self):
-        pygame.init()
-        self.screen = Screen()
+    def __init__(self, render=True, ai_controled=False):
+        self.render = render
+        self.ai_controled = ai_controled
+        if self.render:
+            pygame.init()
+            self.screen = Screen()
+            self.hud = Hud()
+            self.font = pygame.font.Font(None, 24)
+        else:
+            self.screen = None
+            self.hud = None
+            self.font = None
+
+        self.pacman = None
         self.running = False
         self.debug = False
-        self.hud = Hud()
-        self.pacman = None
-        self.font = pygame.font.Font(None, 24)
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
 
@@ -47,7 +55,7 @@ class Game:
                 self.reset()
 
     def update(self, dt):
-        if self.pacman is not None:
+        if self.pacman is not None and not self.ai_controled:
             self.pacman.handle_input(pygame.key.get_pressed())
         for entity in self.entities:
             entity.update(dt) 
@@ -82,8 +90,9 @@ class Game:
     def run(self):
         self.running = True
         while self.running:
-            self.hundle_events()
             self.update(self.screen.get_deltatime())
-            self.draw()
-            self.screen.update()
+            if self.render:
+                self.hundle_events()
+                self.draw()
+                self.screen.update()
         self.quit()
