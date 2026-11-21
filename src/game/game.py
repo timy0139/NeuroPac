@@ -17,7 +17,7 @@ class Game:
             pygame.init()
             self.screen = Screen()
             self.hud = Hud()
-            self.font = pygame.font.Font(None, 24)
+            
         else:
             self.screen = None
             self.hud = None
@@ -78,7 +78,7 @@ class Game:
         self.hud.draw(self.screen.get_display(), score)
         if self.debug:
             debug.draw_walkable(self.screen.get_display(), self.tilemap)
-            debug.draw_score(self.screen.get_display(), self.font)
+            
 
     def reset(self):
         self.tilemap.reset()                         

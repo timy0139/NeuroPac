@@ -28,7 +28,7 @@ class Movable(Entities):
         origin = (self.col, self.row)
         self.col, self.row = self.target
         self.target = origin
-        self.progression = self.tile - self.progress
+        self.progress = self.tile - self.progress
         self.direction = self.next_direction
 
     #Lorsqu'au centre d'une case prend la direction demandée
@@ -40,6 +40,7 @@ class Movable(Entities):
         dx, dy = DIRECTIONS[self.direction]
         self.target = (self.col + dx, self.row + dy)  
         self.progress = 0.0
+        return True
 
     def arrive(self):
         self.col, self.row = self.target

@@ -36,5 +36,3 @@ PACMAN_SPEED = 75
 EMPTY_TILE = 93     # case vide
 GOMME_TILE = 94    # gomme
 SPECIAL_TILE = 96     # gomme spéciale
-GOMME_POINTS = 10   
-SPECIAL_POINTS = 50 
