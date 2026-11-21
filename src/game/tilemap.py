@@ -24,7 +24,7 @@ class TileMap:
         flat_list = [int(v) for v in data_text.split(",") if v.strip()]
 
         self.matrix = [flat_list[y*self.width : (y+1)*self.width]for y in range(self.height)]
-                
+        self.initial_matrix = [row[:] for row in self.matrix]        
         self.tiles = {}
         self.sprite_firstgid = None
         # Charge chaque tileset déclaré dans le .tmx
@@ -32,7 +32,7 @@ class TileMap:
         self.entities = self.load_objects()
 
 
-    #permet de découper l'affichage en fonction du nombre de tuile
+    #charge les tilesets
     def load_tilesets(self, base_directory):
         # findall car 2 tilesets dans la carte
         for tileset in self.root.findall("tileset"):
@@ -43,6 +43,7 @@ class TileMap:
             if tsx_path.stem == "General_Sprites":
                 self.sprite_firstgid = firstgid
 
+    #découpe l'affichage en petites tuiles et les stock dans un dico
     def load_one_tileset(self, tsx_path, firstgid):
         tsx_root = ElementTree.parse(tsx_path).getroot()
         # Taille de tuile DU TILESET (8 pour le labyrinthe, 16 pour les sprites)
@@ -65,6 +66,7 @@ class TileMap:
             
             self.tiles[firstgid + n] = pygame.transform.scale(surf, (tilewidth * utils.ZOOM, tileheight * utils.ZOOM))
 
+    #regarde le fichier XML pour trouver les objet et les extraires
     def load_objects(self):
         entities = []
         # Cherche objectgroup name="Entities" ; None si le calque n'existe pas
@@ -99,4 +101,7 @@ class TileMap:
         if tile == utils.GOMME_TILE or tile == utils.SPECIAL_TILE:
             self.matrix[row][col] = utils.EMPTY_TILE
             return tile          
-        return 0                 
+        return 0         
+
+    def reset(self):
+        self.matrix = [row[:] for row in self.initial_matrix]

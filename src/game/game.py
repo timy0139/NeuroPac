@@ -6,6 +6,7 @@ from entities import Entities
 from pacman import Pacman
 from screen import Screen
 from tilemap import TileMap
+from hud import Hud
 
 
 class Game:
@@ -14,6 +15,7 @@ class Game:
         self.screen = Screen()
         self.running = False
         self.debug = False
+        self.hud = Hud()
         self.pacman = None
         self.font = pygame.font.Font(None, 24)
         self.tilemap = TileMap(utils.MAP_FILE)
@@ -41,6 +43,8 @@ class Game:
                 # activer/désactiver le mode debug
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 self.debug = not self.debug
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                self.reset()
 
     def update(self, dt):
         if self.pacman is not None:
@@ -62,9 +66,15 @@ class Game:
                         self.screen.get_display().blit(tile_image,(pos_x, pos_y))
         for entity in self.entities:
             entity.draw(self.screen.get_display())
+        score = self.pacman.score if self.pacman is not None else 0
+        self.hud.draw(self.screen.get_display(), score)
         if self.debug:
             debug.draw_walkable(self.screen.get_display(), self.tilemap)
             debug.draw_score(self.screen.get_display(), self.font)
+
+    def reset(self):
+        self.tilemap.reset()                         
+        self.entities = self.create_entities()
 
     def quit(self):
         pygame.quit()
