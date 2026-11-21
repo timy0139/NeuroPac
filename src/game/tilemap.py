@@ -106,7 +106,12 @@ class TileMap:
         if tile == utils.GOMME_TILE or tile == utils.SPECIAL_TILE:
             self.matrix[row][col] = utils.EMPTY_TILE
             return tile          
-        return 0         
+        return 0
+
+    @property
+    def gommes_left(self):
+        return sum(row.count(utils.GOMME_TILE) + row.count(utils.SPECIAL_TILE)
+                   for row in self.matrix)
 
     def reset(self):
         self.matrix = [row[:] for row in self.initial_matrix]

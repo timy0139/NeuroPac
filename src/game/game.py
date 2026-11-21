@@ -59,6 +59,8 @@ class Game:
     def update(self, dt):
         self.read_keyboard()
         self.simulator.update(dt)
+        if self.simulator.finished:
+            pygame.display.set_caption(f"NeuroPac | partie terminée | score{self.simulator.pacman.score} | R pour rejouer")
 
     def draw(self):
         self.screen.clear()
@@ -81,6 +83,7 @@ class Game:
 
     def reset(self):
         self.simulator.reset()
+        pygame.display.set_caption(utils.WINDOW_TITLE)
 
     def quit(self):
         pygame.quit()
