@@ -14,3 +14,4 @@ def draw_walkable(surface, tilemap):
             else:
                 calque.fill((255, 0, 0, 80))                 # rouge = mur
             surface.blit(calque, (col * size, row * size))
+    

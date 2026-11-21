@@ -10,7 +10,9 @@ WINDOW_TITLE = "NeuroPac"
 ZOOM = 3
 TILE_SIZE = 8
 SCREEN_WIDTH = 28 * TILE_SIZE * ZOOM
-SCREEN_HEIGHT = 31 * TILE_SIZE * ZOOM
+MAP_PIXEL_HEIGHT = 31 * TILE_SIZE * ZOOM        
+HUD_HEIGHT = 3 * TILE_SIZE * ZOOM                
+SCREEN_HEIGHT = MAP_PIXEL_HEIGHT + HUD_HEIGHT
 BACKGROUND_COLOR = (0, 0, 0)
 FPS = 60                    
 MAP_WIDTH = 0
@@ -30,3 +32,9 @@ def setTileSize(size):
 
 WALKABLE_TILES = {93, 94, 96}
 PACMAN_SPEED = 75
+
+EMPTY_TILE = 93     # case vide
+GOMME_TILE = 94    # gomme
+SPECIAL_TILE = 96     # gomme spéciale
+GOMME_POINTS = 10   
+SPECIAL_POINTS = 50 

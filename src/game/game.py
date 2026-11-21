@@ -6,15 +6,26 @@ from entities import Entities
 from pacman import Pacman
 from screen import Screen
 from tilemap import TileMap
+from hud import Hud
 
 
 class Game:
-    def __init__(self):
-        pygame.init()
-        self.screen = Screen()
+    def __init__(self, render=True, ai_controled=False):
+        self.render = render
+        self.ai_controled = ai_controled
+        if self.render:
+            pygame.init()
+            self.screen = Screen()
+            self.hud = Hud()
+            self.font = pygame.font.Font(None, 24)
+        else:
+            self.screen = None
+            self.hud = None
+            self.font = None
+
+        self.pacman = None
         self.running = False
         self.debug = False
-        self.pacman = None
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
 
@@ -40,9 +51,11 @@ class Game:
                 # activer/désactiver le mode debug
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 self.debug = not self.debug
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                self.reset()
 
     def update(self, dt):
-        if self.pacman is not None:
+        if self.pacman is not None and not self.ai_controled:
             self.pacman.handle_input(pygame.key.get_pressed())
         for entity in self.entities:
             entity.update(dt) 
@@ -61,8 +74,15 @@ class Game:
                         self.screen.get_display().blit(tile_image,(pos_x, pos_y))
         for entity in self.entities:
             entity.draw(self.screen.get_display())
+        score = self.pacman.score if self.pacman is not None else 0
+        self.hud.draw(self.screen.get_display(), score)
         if self.debug:
             debug.draw_walkable(self.screen.get_display(), self.tilemap)
+            debug.draw_score(self.screen.get_display(), self.font)
+
+    def reset(self):
+        self.tilemap.reset()                         
+        self.entities = self.create_entities()
 
     def quit(self):
         pygame.quit()
@@ -70,8 +90,9 @@ class Game:
     def run(self):
         self.running = True
         while self.running:
-            self.hundle_events()
             self.update(self.screen.get_deltatime())
-            self.draw()
-            self.screen.update()
+            if self.render:
+                self.hundle_events()
+                self.draw()
+                self.screen.update()
         self.quit()
