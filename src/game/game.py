@@ -8,7 +8,12 @@ from screen import Screen
 from tilemap import TileMap
 from hud import Hud
 
-
+KEY_DIRECTIONS = {
+    pygame.K_LEFT: "left", pygame.K_q: "left",
+    pygame.K_RIGHT: "right", pygame.K_d: "right",
+    pygame.K_UP: "up", pygame.K_z: "up",
+    pygame.K_DOWN: "down", pygame.K_s: "down",
+}
 class Game:
     def __init__(self, render=True, ai_controled=False):
         self.render = render
@@ -28,6 +33,13 @@ class Game:
         self.debug = False
         self.tilemap = TileMap(utils.MAP_FILE)
         self.entities = self.create_entities()   
+
+    def read_keyboard(self):
+        keys = pygame.key.get_pressed()
+        for key, direction in KEY_DIRECTIONS.items():
+            if keys[key]:
+                self.pacman.set_direction(direction)   
+                break
 
     def create_entities(self):
         entities = []
@@ -56,9 +68,9 @@ class Game:
 
     def update(self, dt):
         if self.pacman is not None and not self.ai_controled:
-            self.pacman.handle_input(pygame.key.get_pressed())
+            self.read_keyboard()
         for entity in self.entities:
-            entity.update(dt) 
+            entity.update(dt)
 
     def draw(self):
         self.screen.clear()
