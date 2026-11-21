@@ -1,4 +1,3 @@
-import pygame
 import sprites
 import utils
 from movable import Movable

@@ -1,7 +1,6 @@
 from pathlib import Path
 from xml.etree import ElementTree  #parseur XML 
 
-import pygame
 import utils
 
 
@@ -42,13 +41,15 @@ class TileMap:
         for tileset in self.root.findall("tileset"):
             firstgid = int(tileset.get("firstgid"))   # 1 pour le labyrinthe, 145 pour les sprites
             tsx_path = (base_directory / tileset.get("source")).resolve()
-            self.load_one_tileset(tsx_path, firstgid)
+            if self.render:
+                self.load_one_tileset(tsx_path, firstgid)
             # permet de retrouver les sprites en les marquant
             if tsx_path.stem == "General_Sprites":
                 self.sprite_firstgid = firstgid
 
     #découpe l'affichage en petites tuiles et les stock dans un dico
     def load_one_tileset(self, tsx_path, firstgid):
+        import pygame
         tsx_root = ElementTree.parse(tsx_path).getroot()
         # Taille de tuile DU TILESET (8 pour le labyrinthe, 16 pour les sprites)
         tilewidth = int(tsx_root.get("tilewidth"))
